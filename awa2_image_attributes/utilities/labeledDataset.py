@@ -1,0 +1,55 @@
+
+import os
+
+import torch
+from natsort import natsorted
+from PIL import Image
+from torch.utils.data import Dataset
+
+
+class LabeledDataset(Dataset):
+    """Dataset for image-wise attribute loading of CUB."""
+
+    def __init__(self, label_idx, class_idx_attribute, class_idx_attribute_idx, transform, root_dir="/data/felix/AWA2/Animals_with_Attributes2/JPEGImages/"):
+        """
+        Args:
+            csv_file (string): Path to the csv file with annotations.
+            root_dir (string): Directory with all the images.
+            transform (callable, optional): Optional transform to be applied
+                on a sample.
+        """
+
+        self.label_idx = label_idx
+        self.class_idx_attribute = class_idx_attribute
+        self.class_idx_attribute_idx = class_idx_attribute_idx
+
+        self.root_dir = root_dir
+        self.transform = transform
+        all_folders = os.listdir(root_dir)
+        all_imgs = []
+        for folder in all_folders:
+            all_imgs.extend([os.path.join(folder, i) for i in os.listdir(os.path.join(root_dir, folder))])
+        self.all_imgs = natsorted(all_imgs)
+
+    def __len__(self):
+        return len(self.all_imgs)
+
+    def __getitem__(self, id):
+        if torch.is_tensor(id):
+            id = id.tolist()
+
+        img_name = self.all_imgs[id]
+        img_loc = os.path.join(self.root_dir, img_name)
+
+        image = Image.open(img_loc).convert("RGB")
+        image = self.transform(image)
+
+        label_name = img_loc.split("/")[-2]  # .replace("+", " ")
+        class_id = self.label_idx[label_name]
+        attributes = self.class_idx_attribute[class_id]
+        attr_ids = self.class_idx_attribute_idx[class_id]
+
+        sample = {'image': image, 'attributes': attributes, "attr_ids": attr_ids,
+                  "label_name": label_name, "class_id": class_id, "image_name": img_name, "img_id": id}
+
+        return sample

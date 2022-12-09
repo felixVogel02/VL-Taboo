@@ -329,7 +329,7 @@ class Experiment():
         return result
 
 
-def experiment1(module, model_name="open_clip", name_add=""):
+def experiment1(file_path_base, module, model_name="open_clip", name_add=""):
     """Executes the first experiment where attribtues are added only to the correct sentence.
     module: Not needed for flava model. (Internally processor is used instead.)"""
 
@@ -340,12 +340,6 @@ def experiment1(module, model_name="open_clip", name_add=""):
     print("Loaded Dataset and model in: ", end1-start, "s")
     sentenceCreator = SentenceCreator(model=infos["model"], module=module,
                                       device="cuda", processor=infos["processor"], model_name=model_name)
-
-    # for key in infos["class_names"].keys():
-    #     print(infos["class_names"][key])
-    #     if "crane" in infos["class_names"][key] or "Crane" in infos["class_names"][key]:
-    #         print("Key: ", key, "Value: ", infos["class_names"][key])
-    # return
     # Create the sentences and tokenize them.
     id_sentence = sentenceCreator.create_class_sentences(infos["class_names"])
     # return
@@ -357,7 +351,7 @@ def experiment1(module, model_name="open_clip", name_add=""):
         print(id_sentence[1], "+++++", id_sentence[2], "+++++", id_sentence[3], "+++++")
 
         experiment.validation1(infos["data_loader"], sentenceCreator, text_features=text_features, attr_num=attr_num,
-                               file_path_base="/home/felix/new_bachelor/cub/results/" + name_add + "attr_vs_no_attr/min_certainty_3/")
+                               file_path_base=file_path_base)
         print("Done with attribute number: ", str(attr_num))
         end1 = time.time()
         print(f"Step {attr_num} took {end1-start1} s.")
@@ -365,7 +359,7 @@ def experiment1(module, model_name="open_clip", name_add=""):
     print("Total time consumption: ", end2-start, "s")
 
 
-def experiment2(module, model_name="open_clip", name_add=""):
+def experiment2(file_path_base, module, model_name="open_clip", name_add=""):
     """Executes the second experiment where the attributes of the current image are added to all sentences."""
 
     start = time.time()
@@ -380,14 +374,14 @@ def experiment2(module, model_name="open_clip", name_add=""):
     for attr_num in [2]:  # range(0, 20):
         start1 = time.time()
         experiment.validation2(infos["data_loader"], sentenceCreator, id_label=infos["class_names"], attr_num=attr_num,
-                               file_path_base="/home/felix/new_bachelor/cub/results/" + name_add + "all_same_attr/")
+                               file_path_base=file_path_base)
         end1 = time.time()
         print(f"Step {attr_num} took {end1-start1} s.")
     end2 = time.time()
     print("Total time consumption: ", end2-start, "s")
 
 
-def experiment3(module, model_name="open_clip", name_add=""):
+def experiment3(file_path_base, module, model_name="open_clip", name_add=""):
     """Executes experiment 3 where one image gets its image attributes, while all
     other images get the same number of attributes, but their class attributes.
     This is relative similar to experiment one, but now the initially created sentences are different."""
@@ -413,7 +407,7 @@ def experiment3(module, model_name="open_clip", name_add=""):
             text_list.append(text_feat)
 
         experiment.validation1_new(infos["data_loader"], sentenceCreator, text_list=text_list, attr_num=attr_num,
-                                   file_path_base="/home/felix/new_bachelor/cub/results/" + name_add + "attr_vs_class_attr/")
+                                   file_path_base=file_path_base)
         print("Done with attribute number: ", str(attr_num))
         end1 = time.time()
         print(f"Step {attr_num} took {end1-start1} s.")
@@ -421,8 +415,8 @@ def experiment3(module, model_name="open_clip", name_add=""):
     print("Total time consumption: ", end2-start, "s")
 
 
-def experiment4(module, model_name="open_clip", name_add=""):
-    """Similar to experiment 3, but now the class labels are left out and only attributes are used."""
+def experiment4(file_path_base, module, model_name="open_clip", name_add=""):
+    """Count how many classes the chosen attribute subset fits to get a statistical upper bound on the accuracy of class prediction."""
 
     start = time.time()
     loadDataset = LoadDataset()
@@ -447,7 +441,7 @@ def experiment4(module, model_name="open_clip", name_add=""):
             text_list.append(text_feat)
 
         experiment.validation1_new(infos["data_loader"], sentenceCreator, text_list=text_list, no_label=True, attr_num=attr_num,
-                                   file_path_base="/home/felix/new_bachelor/cub/results/" + name_add + "without_label/")
+                                   file_path_base=file_path_base)
 
         end1 = time.time()
         print(f"Step {attr_num} took {end1-start1} s.")
@@ -455,7 +449,7 @@ def experiment4(module, model_name="open_clip", name_add=""):
     print("Total time consumption: ", end2-start, "s")
 
 
-def experiment4_stat(module, model_name="open_clip", name_add=""):
+def experiment4_stat(file_path_base, module, model_name="open_clip", name_add=""):
     """It can be the case that several prompts look exactly the same, because they only use attributes that can duplicate.
         Even if the model would work perfectly it wouldn't know which of them to choose. Therefore we calculate approximately
         how many same """
@@ -476,7 +470,7 @@ def experiment4_stat(module, model_name="open_clip", name_add=""):
         start1 = time.time()
 
         experiment.validation1_stat(infos["data_loader"], sentenceCreator, infos, no_label=True, attr_num=attr_num,
-                                    file_path_base="/home/felix/new_bachelor/cub/results/" + name_add + "without_label/")
+                                    file_path_base=file_path_base)
 
         end1 = time.time()
         print(f"Step {attr_num} took {end1-start1} s.")
@@ -484,7 +478,7 @@ def experiment4_stat(module, model_name="open_clip", name_add=""):
     print("Total time consumption: ", end2-start, "s")
 
 
-def experiment5(module, model_name="open_clip", name_add=""):
+def experiment5(file_path_base, module, model_name="open_clip", name_add=""):
     """Executes experiment 3 where one image gets its image attributes, while all
     other images get the same number of attributes, but their class attributes.
     This is relative similar to experiment one, but now the initially created sentences are different."""
@@ -511,7 +505,7 @@ def experiment5(module, model_name="open_clip", name_add=""):
 
         experiment.validation3(infos["data_loader"], sentenceCreator, infos, all_attributes=all_attributes, all_attributes_search=all_attributes_search,
                                all_attributes_search_inv=all_attributes_search_inv, attr_num=attr_num,
-                               file_path_base="/home/felix/new_bachelor/cub/results/" + name_add + "one_vs_one/")
+                               file_path_base=file_path_base)
         print("Done with attribute number: ", str(attr_num))
         end1 = time.time()
         print(f"Step {attr_num} took {end1-start1} s.")
@@ -521,18 +515,4 @@ def experiment5(module, model_name="open_clip", name_add=""):
 
 if __name__ == "__main__":
     torch.set_printoptions(precision=10)
-    # experiment1(module=clip, model_name="clip", name_add="clip/")
-    # experiment2()
-    # experiment1(module="", model_name="flava", name_add="flava/")
-    # experiment3(module="", model_name="flava", name_add="flava/")
-    # experiment4(module="", model_name="flava", name_add="flava/")
-    # experiment2(module="", model_name="flava", name_add="flava/")
-
-    # Experiment 3 and 4 new with different chosen class attributes.
-    # experiment3(module=open_clip, model_name="open_clip", name_add="")
-    # experiment3(module=clip, model_name="clip", name_add="clip/")
-    # experiment3(module="", model_name="flava", name_add="flava/")
-
-    # experiment4(module=open_clip, model_name="open_clip", name_add="")
-    # experiment4(module=clip, model_name="clip", name_add="clip/")
-    # experiment4(module="", model_name="flava", name_add="flava/")
+    # experiment1(file_path_base, module="", model_name="flava", name_add="flava/")
