@@ -17,7 +17,6 @@ from fastparquet import ParquetFile
 from sklearn import metrics
 from sklearn.metrics import confusion_matrix
 
-import utilities
 from predict_attributes import AttributePredictor
 
 

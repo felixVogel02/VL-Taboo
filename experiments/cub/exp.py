@@ -38,12 +38,6 @@ class Experiment():
             if len(attributes.keys()) < attr_num:
                 result["total"]["ignored_imgs"] = result["total"]["ignored_imgs"] + 1
                 continue
-                # print("To few attributes!")
-                # print("Assigned attributes: ", attributes.keys())
-                # print("Needed attributes: ", attr_num)
-                # print("Label: ", label)
-                # print("Image name: ", input["image_name"])
-                # print("Image id: ", input["img_id"])
             # Create new sentence for label class and replace the old sentence of that class in text_features.
             sent = sentenceCreator.create_class_sentences_with_attributes(
                 label, attributes, attr_num=attr_num, no_label=no_label)
@@ -66,35 +60,21 @@ class Experiment():
             # print("Sim: ", sim)
             print("Similarity: ", similarity[0])
             values, indices = torch.topk(similarity[0], 1)
-            print("Values: ", values)
-            print("Indices: ", indices)
-            # print("Use text features: ", use_text_feat)
-            # print("SImilarity: ", sim)
-            # print("Label: ", class_id)
-            # print("Indices: ", indices)
-
-            # values, indices = similarity[0].topk(1)
-            # print("Indices1: ", indices)
             cls_id_pred = indices[0].item() + 1
             label_cls = int(class_id)
 
             correct = False
             if cls_id_pred == label_cls:
                 correct = True
-            print("Predicted: ", cls_id_pred)
-            print("Label: ", label_cls, "Correct: ",
-                  correct)
-            if cntEND >= 1005:
-                return
             result[label_cls]["correct"] = result[label_cls]["correct"] + correct
             result[label_cls]["count"] = result[label_cls]["count"] + 1
             result["total"]["correct"] = result["total"]["correct"] + correct
             result["total"]["count"] = result["total"]["count"] + 1
 
         file_path = file_path_base + str(attr_num) + "_attr_results.pickle"
-        # with open(file_path, "wb") as act:
-        #     pickle.dump(result, act, protocol=pickle.HIGHEST_PROTOCOL)
-        # act.close()
+        with open(file_path, "wb") as act:
+            pickle.dump(result, act, protocol=pickle.HIGHEST_PROTOCOL)
+        act.close()
 
         return result
 
@@ -150,7 +130,7 @@ class Experiment():
         return result
 
 
-def experiment1(module, model_name="open_clip", name_add=""):
+def experiment1(file_path_base, module, model_name="open_clip", name_add=""):
     """Executes the first experiment where attributes are added only to the correct sentence."""
 
     start = time.time()
@@ -168,13 +148,13 @@ def experiment1(module, model_name="open_clip", name_add=""):
     for attr_num in range(0, 26):
 
         experiment.validation1(infos["data_loader"], sentenceCreator, text_features=text_features, attr_num=attr_num,
-                               file_path_base="/home/felix/new_bachelor/cub/results/" + name_add + "attr_vs_no_attr/min_certainty_3/")
+                               file_path_base=file_path_base)
         print("Done with attribute number: ", str(attr_num))
     end2 = time.time()
     print("Total time consumption: ", end2-start, "s")
 
 
-def experiment2(module, model_name="open_clip", name_add=""):
+def experiment2(file_path_base, module, model_name="open_clip", name_add=""):
     """Executes the second experiment where the attributes of the current image are added to all sentences."""
 
     start = time.time()
@@ -187,13 +167,13 @@ def experiment2(module, model_name="open_clip", name_add=""):
     experiment = Experiment(model=infos["model"], device="cuda")
     for attr_num in range(0, 25):
         experiment.validation2(infos["data_loader"], sentenceCreator, id_label=infos["class_names"], attr_num=attr_num,
-                               file_path_base="/home/felix/new_bachelor/cub/results/" + name_add + "all_same_attr/")
+                               file_path_base=file_path_base)
         print("Done with attribute number: ", str(attr_num))
     end2 = time.time()
     print("Total time consumption: ", end2-start, "s")
 
 
-def experiment3(module, model_name="open_clip", name_add=""):
+def experiment3(file_path_base, module, model_name="open_clip", name_add=""):
     """Executes experiment 3 where one image gets its image attributes, while all
     other images get the same number of attributes, but their class attributes.
     This is relative similar to experiment one, but now the initially created sentences are different."""
@@ -208,16 +188,8 @@ def experiment3(module, model_name="open_clip", name_add=""):
     print("Loaded Dataset and model in: ", end1-start, "s")
     sentenceCreator = SentenceCreator(model=infos["model"], module=module, device="cuda")
     mini = float("inf")
-    # for key in infos["class_attributes"].keys():
-    #     # print(len(infos["class_attributes"][key]))
-    #     if len(infos["class_attributes"][key]) < mini:
-    #         mini = len(infos["class_attributes"][key])
-    # print(infos["class_attributes"])
-    # print("Mini: ", mini)
-    # return
 
     # Create the sentences and tokenize them.
-
     experiment = Experiment(model=infos["model"], device="cuda")
     for attr_num in range(1, 26):
         # print(infos["id_attr"])
@@ -229,13 +201,13 @@ def experiment3(module, model_name="open_clip", name_add=""):
         print("Tokenized sentence: ", text_features)
 
         experiment.validation1(infos["data_loader"], sentenceCreator, text_features=text_features, attr_num=attr_num,
-                               file_path_base="/home/felix/new_bachelor/cub/results/" + name_add + "attr_vs_class_attr/")
+                               file_path_base=file_path_base)
         print("Done with attribute number: ", str(attr_num))
     end2 = time.time()
     print("Total time consumption: ", end2-start, "s")
 
 
-def experiment4(module, model_name="open_clip", name_add=""):
+def experiment4(file_path_base, module, model_name="open_clip", name_add=""):
     """Similar to experiment 3, but now the class labels are left out and only attributes are used."""
 
     start = time.time()
@@ -247,17 +219,8 @@ def experiment4(module, model_name="open_clip", name_add=""):
     end1 = time.time()
     print("Loaded Dataset and model in: ", end1-start, "s")
     sentenceCreator = SentenceCreator(model=infos["model"], module=module, device="cuda")
-    mini = float("inf")
-    # for key in infos["class_attributes"].keys():
-    #     # print(len(infos["class_attributes"][key]))
-    #     if len(infos["class_attributes"][key]) < mini:
-    #         mini = len(infos["class_attributes"][key])
-    # print(infos["class_attributes"])
-    # print("Mini: ", mini)
-    # return
 
     # Create the sentences and tokenize them.
-
     experiment = Experiment(model=infos["model"], device="cuda")
     for attr_num in range(1, 26):
         # print(infos["id_attr"])
@@ -269,7 +232,7 @@ def experiment4(module, model_name="open_clip", name_add=""):
         print("Text features: ", text_features)
 
         experiment.validation1(infos["data_loader"], sentenceCreator, text_features=text_features, no_label=True, attr_num=attr_num,
-                               file_path_base="/home/felix/new_bachelor/cub/results/" + name_add + "without_label/")
+                               file_path_base=file_path_base)
         print("Done with attribute number: ", str(attr_num))
     end2 = time.time()
     print("Total time consumption: ", end2-start, "s")
