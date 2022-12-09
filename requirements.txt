@@ -1,0 +1,11 @@
+pandas~=1.5
+numpy~=1.21.4
+matplotlib~=3.6.2
+natsort~=8.2.0
+transformers~=4.25.1
+open_clip_torch~=1.0.1
+clip~=1.0
+ahocorapy~=1.6.2
+fastparquet~=2022.12.0
+seaborn~=0.12.1
+torchvision~=0.14.0
