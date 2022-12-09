@@ -297,7 +297,7 @@ def experiment1(file_path_base, module, model_name="open_clip", name_add=""):
     """Executes the first experiment where attributes are added only to the correct sentence."""
 
     start = time.time()
-    loadDataset = LoadDataset(model_name=model_name, new=True)
+    loadDataset = LoadDataset(model_name=model_name, new=False)
     model = loadDataset.model
     class_names = loadDataset.idx_label
     dataloader = loadDataset.data_loader
@@ -328,7 +328,7 @@ def experiment2(file_path_base, module, model_name="open_clip", name_add="", sta
     """Executes the second experiment where the attributes of the current image are added to all sentences."""
 
     start = time.time()
-    loadDataset = LoadDataset(model_name=model_name, new=True)
+    loadDataset = LoadDataset(model_name=model_name, new=False)
     model = loadDataset.model
     class_names = loadDataset.idx_label
     dataloader = loadDataset.data_loader
@@ -356,7 +356,7 @@ def experiment3(file_path_base, module, model_name="open_clip", name_add=""):
     This is relative similar to experiment one, but now the initially created sentences are different."""
 
     start = time.time()
-    loadDataset = LoadDataset(model_name=model_name, new=True)
+    loadDataset = LoadDataset(model_name=model_name, new=False)
     model = loadDataset.model
     class_names = loadDataset.idx_label
     dataloader = loadDataset.data_loader
@@ -392,7 +392,7 @@ def experiment1_new_sent(file_path_base, module, model_name="open_clip", name_ad
     """Executes the first experiment where attributes are added only to the correct sentence."""
 
     start = time.time()
-    loadDataset = LoadDataset(model_name=model_name, new=True)
+    loadDataset = LoadDataset(model_name=model_name, new=False)
     model = loadDataset.model
     class_names = loadDataset.idx_label
     dataloader = loadDataset.data_loader
@@ -423,7 +423,7 @@ def experiment2_new_sent(file_path_base, module, model_name="open_clip", name_ad
     """Executes the second experiment where the attributes of the current image are added to all sentences."""
 
     start = time.time()
-    loadDataset = LoadDataset(model_name=model_name, new=True)
+    loadDataset = LoadDataset(model_name=model_name, new=False)
     model = loadDataset.model
     class_names = loadDataset.idx_label
     dataloader = loadDataset.data_loader
@@ -452,7 +452,7 @@ def experiment3_new_sent(file_path_base, module, model_name="open_clip", name_ad
     This is relative similar to experiment one, but now the initially created sentences are different."""
 
     start = time.time()
-    loadDataset = LoadDataset(model_name=model_name, new=True)
+    loadDataset = LoadDataset(model_name=model_name, new=False)
     model = loadDataset.model
     class_names = loadDataset.idx_label
     dataloader = loadDataset.data_loader
@@ -489,7 +489,7 @@ def experiment4_new_sent(file_path_base, module, model_name="open_clip", name_ad
     """Similar to experiment 3, but now the class labels are left out and only attributes are used."""
 
     start = time.time()
-    loadDataset = LoadDataset(model_name=model_name, new=True)
+    loadDataset = LoadDataset(model_name=model_name, new=False)
     model = loadDataset.model
     class_names = loadDataset.idx_label
     dataloader = loadDataset.data_loader
@@ -526,7 +526,7 @@ def experiment5_new_sent(file_path_base, module, model_name="open_clip", name_ad
     This is relative similar to experiment one, but now the initially created sentences are different."""
 
     start = time.time()
-    loadDataset = LoadDataset(model_name=model_name, new=True)
+    loadDataset = LoadDataset(model_name=model_name, new=False)
     model = loadDataset.model
     class_names = loadDataset.idx_label
     dataloader = loadDataset.data_loader
@@ -554,7 +554,7 @@ def experiment4(file_path_base, module, model_name="open_clip", name_add=""):
     """Similar to experiment 3, but now the class labels are left out and only attributes are used."""
 
     start = time.time()
-    loadDataset = LoadDataset(model_name=model_name, new=True)
+    loadDataset = LoadDataset(model_name=model_name, new=False)
     model = loadDataset.model
     class_names = loadDataset.idx_label
     dataloader = loadDataset.data_loader
@@ -594,7 +594,7 @@ def experiment4_stat(file_path_base, module, model_name="open_clip", name_add=""
         how many same """
 
     start = time.time()
-    loadDataset = LoadDataset(model_name=model_name, new=True)
+    loadDataset = LoadDataset(model_name=model_name, new=False)
     model = loadDataset.model
     class_names = loadDataset.idx_label
     dataloader = loadDataset.data_loader
@@ -624,7 +624,7 @@ def experiment5(file_path_base, module, model_name="open_clip", name_add=""):
     This is relative similar to experiment one, but now the initially created sentences are different."""
 
     start = time.time()
-    loadDataset = LoadDataset(model_name=model_name, new=True)
+    loadDataset = LoadDataset(model_name=model_name, new=False)
     model = loadDataset.model
     class_names = loadDataset.idx_label
     dataloader = loadDataset.data_loader
