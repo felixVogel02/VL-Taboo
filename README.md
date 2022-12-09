@@ -30,6 +30,7 @@ Attributes are only provided per class not per image. Therefore, with the help o
 
 1.  Go in awa2_image_attributes/save_imageLabels.py. There replace all datapaths with the paths to your local AWA2 download and replace the saving paths.Then execute the functions main, after_care, and after_care2 in this ordering to create the image attributes.
 2.   Execute the experiment by executing a function in experiments/awa2/exp.py:
+  
     ```
     experiment1("mypath/results/", module=clip, model_name="clip", name_add="clip")
     ```
